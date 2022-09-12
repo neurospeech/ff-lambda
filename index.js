@@ -1,27 +1,24 @@
 const FFProbe = require("./dist/FFProbe").default;
+const FFMpeg = require("./dist/FFMpeg").default;
 exports.handler = async (event) => {
 
     const {
         rawPath,
         queryStringParameters: {
             url,
-            probe,
             thumbnails,
         }
     } = event;
 
     if (rawPath.startsWith("/probe")) {
-        return {
-            status: 200,
-            headers: {
-                "content-type": "application/json"
-            },
-            body: JSON.stringify(await FFProbe.probe(url)),
-        }
+        return await FFProbe.probe(url);
+    }
+    if (rawPath.startsWith("/thumb")) {
+        return await FFMpeg.thumbnails(url, thumbnails);
     }
 
-    const response = {
-
+    return {
+        event,
+        error: "no action"
     };
-    return response;
 };
