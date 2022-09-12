@@ -23,7 +23,7 @@ jobs:
     - name: action-zip
       uses: montudor/action-zip@v1.0.0
       with:
-        args: zip -qq -r package.zip . -i ./*/**
+        args: zip -qq -r package.zip package.json index.js dist node_modules src lib
         
     - uses: "marvinpinto/action-automatic-releases@latest"
       with:
