@@ -20,6 +20,8 @@ jobs:
         node-version: 18.x
         cache: 'npm'
     - run: npm install
+    - run: npm install -g typescript
+    - run: tsc
     - name: action-zip
       uses: montudor/action-zip@v1.0.0
       with:
