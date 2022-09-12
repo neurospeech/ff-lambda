@@ -19,7 +19,6 @@
   "homepage": "https://github.com/neurospeech/ff-lambda#readme",
   "dependencies": {
     "ffmpeg-static": "^5.1.0",
-    "ffprobe-static": "^3.1.0",
     "fluent-ffmpeg": "^2.1.2",
     "node-fetch": "^2.6.7",
     "tmp-promise": "^3.0.3"

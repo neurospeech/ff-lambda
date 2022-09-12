@@ -2,12 +2,11 @@ import { spawn } from "child_process";
 import * as ffmpeg from "fluent-ffmpeg";
 import * as path from "path";
 import * as ffmpegPath from "ffmpeg-static";
-import * as ffprobePath from "ffprobe-static";
 
 export default class FFConfig {
 
     public static ffMpegPath = ffmpegPath as any as string;
-    public static ffProbePath = ffprobePath.path as string;
+    public static ffProbePath = path.join(__dirname, "../lib/ffprobe");
 
     public static ffmpeg = ffmpeg;
 
