@@ -16,7 +16,7 @@ exports.handler = async (event) => {
             headers: {
                 "content-type": "application/json"
             },
-            body: JSON.stringify(FFProbe.probe(url)),
+            body: JSON.stringify(await FFProbe.probe(url)),
         }
     }
 
