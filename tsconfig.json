@@ -1,0 +1,27 @@
+{
+    "compilerOptions": {
+      "target": "es6",
+      "watch": false,
+      "module": "commonjs",
+      "jsx": "react",
+      "jsxFactory": "XNode.create",
+      "sourceMap": true,
+      "declaration": true,
+      "moduleResolution": "node",
+      "outDir": "dist",
+      "experimentalDecorators": true,
+      "emitDecoratorMetadata": true,
+      "allowSyntheticDefaultImports": true,
+      "skipLibCheck": true,
+      "lib": [
+        "es6"
+      ]
+    },
+    "include": [
+      "src/**/*"
+    ],
+    "exclude": [
+      "node_modules",
+      "tests"
+    ]
+  }
