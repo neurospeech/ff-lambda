@@ -34,7 +34,7 @@ exports.handler = async (event) => {
 
         return asJson(event);
     } catch (error) {
-        console.error(error);
+        console.log(error);
         return asJson(error.stack ? error.stack : error.toString(), 500);
     }
 };
