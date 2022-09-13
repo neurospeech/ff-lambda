@@ -7,7 +7,7 @@ function asJson(body, statusCode = 200) {
         headers: {
             "content-type": "application/json"
         },
-        body
+        body: JSON.stringify(body)
     };
 }
 
