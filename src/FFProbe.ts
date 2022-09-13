@@ -45,8 +45,12 @@ export default class FFProbe {
 
         const fastStart = indexOfMoov < indexOfMDat;
 
-        const isAAC = metadata.streams.some((x) => x.codec_name === "aac" );
-        const isH264 = metadata.streams.some((x) => x.codec_name === "h264");
+        const isAAC = metadata.streams.some((x) => x.codec_type === "audio") 
+            ? metadata.streams.some((x) => x.codec_name === "aac" )
+            : true;
+        const isH264 = metadata.streams.some((x) => x.codec_type === "video")
+            ? metadata.streams.some((x) => x.codec_name === "h264")
+            : true;
 
         const isMobileReady = isAAC && isH264 && fastStart;
 
