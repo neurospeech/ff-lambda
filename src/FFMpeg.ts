@@ -3,8 +3,7 @@ import * as path from "path";
 import { BlockBlobClient } from "@azure/storage-blob";
 import { existsSync, promises } from "fs";
 import TempFileService from "./TempFileService";
-
-ffmpeg.setFfmpegPath(path.join(__dirname, "../../lib/ffmpeg.exe"));
+export { default as A1}  from "./FFConfig";
 
 export default class FFMpeg {
 
