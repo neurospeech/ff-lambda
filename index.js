@@ -7,14 +7,17 @@ exports.handler = async (event) => {
         queryStringParameters: {
             url,
         } = {},
-        body = {},
+        body: {
+            input,
+            output
+        } = {},
     } = event;
 
     if (rawPath.startsWith("/probe")) {
         return await FFProbe.probe(url);
     }
     if (rawPath.startsWith("/thumb")) {
-        return await FFMpeg.thumbnails(url, body);
+        return await FFMpeg.thumbnails(input, output.thumbnails);
     }
 
     return {
