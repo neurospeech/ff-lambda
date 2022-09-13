@@ -34,7 +34,6 @@ jobs:
         aws-bucket: "${{ secrets.AWS_BUCKET }}"
         file-path: 'package.zip'
         bucket-root: "ff-lambda"
-        public: true
         
     - uses: "marvinpinto/action-automatic-releases@latest"
       with:
