@@ -48,11 +48,21 @@ export default class FFProbe {
         const isAAC = metadata.streams.some((x) => x.codec_type === "audio") 
             ? metadata.streams.some((x) => x.codec_name === "aac" )
             : true;
-        const isH264 = metadata.streams.some((x) => x.codec_type === "video")
-            ? metadata.streams.some((x) => x.codec_name === "h264")
-            : true;
 
-        const isMobileReady = isAAC && isH264 && fastStart;
+        const videoStream = metadata.streams.find((x) => x.codec_type === "video");
+        const isH264 = !videoStream  || (videoStream.codec_name === "h264" );
+
+        let isBelow30FPS = false;
+        const avgFrameRate = videoStream?.avg_frame_rate;
+        if (avgFrameRate) {
+            try {
+               isBelow30FPS = eval(avgFrameRate) < 31;
+            } catch (e) {
+
+            }
+        }
+
+        const isMobileReady = isAAC && isH264 && fastStart && isBelow30FPS;
 
         return {
             ... metadata,
