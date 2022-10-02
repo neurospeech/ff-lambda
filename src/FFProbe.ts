@@ -69,6 +69,7 @@ export default class FFProbe {
             isAAC,
             isH264,
             fastStart,
+            isBelow30FPS,
             isMobileReady,
             indexOfMoov,
             indexOfMDat
