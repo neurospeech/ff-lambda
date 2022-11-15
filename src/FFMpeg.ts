@@ -43,6 +43,9 @@ export default class FFMpeg {
                 return;
             }
             const filePath = folder + "/" + x;
+            if (!existsSync(filePath)) {
+                return;
+            }
             var b = new BlockBlobClient(t.url);
             await b.uploadFile(filePath, {
                 blobHTTPHeaders: {
