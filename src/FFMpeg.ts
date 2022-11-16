@@ -15,7 +15,7 @@ export default class FFMpeg {
         const folder = path.dirname(file);
         const fileNames = await new Promise<string[]>((resolve, reject) => {
             let files;
-            ffmpeg(file)
+            ffmpeg(file, { timeout: 30 })
                 .on("filenames", (names: string[]) => {
                     files = names;
                 })
@@ -34,7 +34,7 @@ export default class FFMpeg {
                         return x.time;
                     }),
                     filename: start + "%000i.jpg"
-                })
+                });
         });
 
         await Promise.all(fileNames.map(async (x, i) => {
