@@ -1,6 +1,6 @@
 {
   "name": "ff-lambda",
-  "version": "1.0.22",
+  "version": "1.0.23",
   "description": "AWS Lambda Endpoints for probe, thumbnails and conversion",
   "main": "index.js",
   "scripts": {
