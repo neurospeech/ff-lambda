@@ -70,7 +70,13 @@ export default class FFMpeg {
 
         if(notify) {
             console.log(`Notifying ${notify}`);
-            await fetch(notify);
+            await fetch(notify, {
+                method: "POST",
+                headers: {
+                    "content-type": "application/json"
+                },
+                body: "{}"
+            });
         }
 
         return result;
