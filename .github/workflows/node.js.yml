@@ -26,15 +26,14 @@ jobs:
       uses: montudor/action-zip@v1.0.0
       with:
         args: zip -qq -r package.zip package.json index.js dist node_modules src lib
-    - uses: hkusu/s3-upload-action@v2
+    - name: default deploy
+      uses: appleboy/lambda-action@master
       with:
-        aws-access-key-id: "${{ secrets.AWS_ACCESS_KEY_ID }}"
-        aws-secret-access-key: "${{ secrets.AWS_SECRET_ACCESS_KEY }}"
-        aws-region: "${{ secrets.AWS_REGION }}"
-        aws-bucket: "${{ secrets.AWS_BUCKET }}"
-        file-path: 'package.zip'
-        bucket-root: "ff-lambda"
-        destination-dir: "/"
+          aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws_region: ${{ secrets.AWS_REGION }}
+          function_name: ffprobe
+          zip_file: package.zip
         
     - uses: "marvinpinto/action-automatic-releases@latest"
       with:
