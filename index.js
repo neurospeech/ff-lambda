@@ -24,16 +24,19 @@ exports.handler = async (event) => {
             body,
         } = event;
 
-        if (rawPath.startsWith("/probe")) {
-            return asJson(await FFProbe.probe(url));
-        }
-        if (rawPath.startsWith("/thumb")) {
-            const { input, output } = JSON.parse(body);
-            return asJson(await FFMpeg.thumbnails(input, output.thumbnails));
-        }
-        if(rawPath.startsWith("/convert")) {
-            const { input, output } = JSON.parse(body);
-            return asJson(await FFMpeg.convert(input, output));
+        if (rawPath) {
+
+            if (rawPath.startsWith("/probe")) {
+                return asJson(await FFProbe.probe(url));
+            }
+            if (rawPath.startsWith("/thumb")) {
+                const { input, output } = JSON.parse(body);
+                return asJson(await FFMpeg.thumbnails(input, output.thumbnails));
+            }
+            if(rawPath.startsWith("/convert")) {
+                const { input, output } = JSON.parse(body);
+                return asJson(await FFMpeg.convert(input, output));
+            }
         }
 
         return asJson(event);
