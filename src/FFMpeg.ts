@@ -6,6 +6,7 @@ import TempFileService from "./TempFileService";
 export { default as A1}  from "./FFConfig";
 import * as mime from "mime-types";
 import fetch from "node-fetch";
+import FFConfig from "./FFConfig";
 
 export interface IFFMpegThumbnail {
     time: number;
@@ -37,27 +38,16 @@ export default class FFMpeg {
 
         const file = await TempFileService.downloadTo(input);
 
-        const fileInfo = path.parse(url);
+        const fileInfo = path.parse(url.split("?")[0]);
         const outputFile = await TempFileService.getTempFile(fileInfo.ext);
 
         const convert = async () => {
 
             console.log("Starting File Conversion");
 
-            await new Promise<void>((resolve, reject) => {
-                let command = ffmpeg(file, { timeout: 60 })
-                    .inputOptions("-" + parameters)
-                    .output(outputFile.path)
-                    .on("end", () => {
-                        resolve();
-                    })
-                    .on("error", (error) => {
-                        console.error(error);
-                        reject(error);
-                    });
+            const output = await FFConfig.run(`-i ${file} ${parameters} -y ${outputFile.path}`.split(" "));
 
-                command.run();
-            });
+            console.log(output);
 
             await FFMpeg.uploadFile(url, outputFile.path);
         }
@@ -115,9 +105,6 @@ export default class FFMpeg {
                 return;
             }
             const filePath = folder + "/" + x;
-            if (!existsSync(filePath)) {
-                return;
-            }
 
             await FFMpeg.uploadFile(t.url, filePath);
         }));
@@ -129,6 +116,10 @@ export default class FFMpeg {
 
     private static async uploadFile(url: string, filePath: string) {
 
+        if (!existsSync(filePath)) {
+            return;
+        }
+    
         console.log(`Uploading ${url}`);
 
         const blobContentType = mime.lookup(filePath);
