@@ -44,7 +44,7 @@ export default class FFMpeg {
             await new Promise<void>((resolve, reject) => {
                 let command = ffmpeg(file, { timeout: 60 })
                     .output(outputFile.path)
-                    .withOptions(parameters)
+                    .withOptions("-" + parameters)
                     .on("end", () => {
                         resolve();
                     })
