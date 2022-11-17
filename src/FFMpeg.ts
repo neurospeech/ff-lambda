@@ -5,6 +5,7 @@ import { existsSync, promises } from "fs";
 import TempFileService from "./TempFileService";
 export { default as A1}  from "./FFConfig";
 import * as mime from "mime-types";
+import fetch from "node-fetch";
 
 export interface IFFMpegThumbnail {
     time: number;
@@ -12,6 +13,7 @@ export interface IFFMpegThumbnail {
 }
 
 export interface IFFMpegOutput {
+    notify: string;
     url: string;
     thumbnails?: IFFMpegThumbnail[];
     parameters?: string;
@@ -29,6 +31,7 @@ export default class FFMpeg {
         {
             url,
             thumbnails,
+            notify,
             parameters
         }: IFFMpegOutput) {
 
@@ -57,10 +60,16 @@ export default class FFMpeg {
 
         await Promise.all([this.thumbnails(input, thumbnails, file), convert()]);
 
-        return {
+        const result = {
             url,
             thumbnails
         };
+
+        if(notify) {
+            await fetch(notify);
+        }
+
+        return result;
     }
 
     public static async thumbnails(input: string, times: IFFMpegThumbnail[], file: string = void 0) {
