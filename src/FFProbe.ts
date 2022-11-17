@@ -4,9 +4,9 @@ import TempFileService from "./TempFileService";
 
 export default class FFProbe {
 
-    public static async probe(url: string) {
+    public static async probe(url: string, file?: string) {
 
-        const file = await TempFileService.downloadTo(url);
+        file ??= await TempFileService.downloadTo(url);
 
         const metadata = await new Promise<any>((resolve, reject) => {
             FFConfig.ffmpeg.ffprobe(file, (error, metadata) => {

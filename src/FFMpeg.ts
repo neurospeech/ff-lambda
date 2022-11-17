@@ -1,12 +1,13 @@
 import * as ffmpeg from "fluent-ffmpeg";
 import * as path from "path";
 import { BlockBlobClient } from "@azure/storage-blob";
-import { existsSync, promises } from "fs";
+import { copyFileSync, existsSync, promises } from "fs";
 import TempFileService from "./TempFileService";
 export { default as A1}  from "./FFConfig";
 import * as mime from "mime-types";
 import fetch from "node-fetch";
 import FFConfig from "./FFConfig";
+import FFProbe from "./FFProbe";
 
 export interface IFFMpegThumbnail {
     time: number;
@@ -15,6 +16,7 @@ export interface IFFMpegThumbnail {
 
 export interface IFFMpegOutput {
     notify: string;
+    ignoreMobileReady?: boolean;
     url: string;
     thumbnails?: IFFMpegThumbnail[];
     parameters?: string;
@@ -31,6 +33,7 @@ export default class FFMpeg {
         input: string,
         {
             url,
+            ignoreMobileReady,
             thumbnails,
             notify,
             parameters
@@ -43,11 +46,17 @@ export default class FFMpeg {
 
         const convert = async () => {
 
-            console.log("Starting File Conversion");
+            const { isMobileReady } = await FFProbe.probe(input, file);
+            if (isMobileReady) {
+                copyFileSync(file, outputFile.path);
+            } else {
 
-            const output = await FFConfig.run(`-i ${file} ${parameters} -y ${outputFile.path}`.split(" "));
+                console.log("Starting File Conversion");
 
-            console.log(output);
+                const output = await FFConfig.run(`-i ${file} ${parameters} -y ${outputFile.path}`.split(" "));
+
+                console.log(output);
+            }
 
             await FFMpeg.uploadFile(url, outputFile.path);
         }
