@@ -92,7 +92,7 @@ export default class FFMpeg {
         const folder = path.dirname(file);
         const fileNames = await new Promise<string[]>((resolve, reject) => {
             let files;
-            ffmpeg(file, { timeout: 30 })
+            ffmpeg(file, { timeout: 60 })
                 .on("filenames", (names: string[]) => {
                     files = names;
                 })
