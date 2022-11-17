@@ -43,8 +43,8 @@ export default class FFMpeg {
         const convert = async () => {
             await new Promise<void>((resolve, reject) => {
                 let command = ffmpeg(file, { timeout: 60 })
+                    .inputOptions("-" + parameters)
                     .output(outputFile.path)
-                    .withOptions("-" + parameters)
                     .on("end", () => {
                         resolve();
                     })
