@@ -69,6 +69,7 @@ export default class FFMpeg {
         };
 
         if(notify) {
+            console.log(`Notifying ${notify}`);
             await fetch(notify);
         }
 
