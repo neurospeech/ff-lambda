@@ -108,15 +108,29 @@ export default class FFMpeg {
                 });
         });
 
+
+        let lastFile: string;
+
         await Promise.all(fileNames.map(async (x, i) => {
-            var t = times[i];
+            const t = times[i];
             if (!t) {
                 return;
             }
-            const filePath = folder + "/" + x;
+            let filePath = folder + "/" + x;
+
+            // this will ensure that 1.jpg will exist if 0.jpg exists...
+            if(!existsSync(filePath) && i === 1) {
+                filePath = lastFile;
+            }
+
+            lastFile = filePath;
 
             await FFMpeg.uploadFile(t.url, filePath);
+
+            return [t, filePath];
         }));
+
+
 
         return times;
 
