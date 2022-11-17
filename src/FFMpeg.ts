@@ -5,13 +5,68 @@ import { existsSync, promises } from "fs";
 import TempFileService from "./TempFileService";
 export { default as A1}  from "./FFConfig";
 
+export interface IFFMpegThumbnail {
+    time: number;
+    url: string;
+}
+
+export interface IFFMpegOutput {
+    url: string;
+    thumbnails?: IFFMpegThumbnail[];
+    parameters?: string;
+}
+
+export interface IFFMpegParams {
+    input: string;
+    output: IFFMpegOutput;
+}
+
 export default class FFMpeg {
 
-    public static async thumbnails(input: string, times: { time: number, url: string }[]) {
+    public static async convert(
+        input: string,
+        {
+            url,
+            thumbnails,
+            parameters
+        }: IFFMpegOutput) {
+
+        const file = await TempFileService.downloadTo(input);
+
+        const fileInfo = path.parse(url);
+        const outputFile = await TempFileService.getTempFile(fileInfo.ext);
+
+        const convert = async () => {
+            await new Promise<void>((resolve, reject) => {
+                let command = ffmpeg(file, { timeout: 60 })
+                    .output(outputFile.path)
+                    .withOptions(parameters)
+                    .on("end", () => {
+                        resolve();
+                    })
+                    .on("error", (error) => {
+                        reject(error);
+                    });
+
+                command.run();
+            });
+
+            await FFMpeg.uploadFile(url, outputFile.path);
+        }
+
+        await Promise.all([this.thumbnails(input, thumbnails, file), convert()]);
+
+        return {
+            url,
+            thumbnails
+        };
+    }
+
+    public static async thumbnails(input: string, times: IFFMpegThumbnail[], file: string = void 0) {
 
         const start = Date.now();
 
-        const file = await TempFileService.downloadTo(input);
+        file ??= await TempFileService.downloadTo(input);
         const folder = path.dirname(file);
         const fileNames = await new Promise<string[]>((resolve, reject) => {
             let files;
@@ -46,22 +101,26 @@ export default class FFMpeg {
             if (!existsSync(filePath)) {
                 return;
             }
-            var b = new BlockBlobClient(t.url);
-            await b.uploadFile(filePath, {
-                blobHTTPHeaders: {
-                    blobContentType: "image/jpg",
-                    blobCacheControl: "public, max-age=3240000"
-                }
-            });
-            try {
-                await promises.unlink(filePath);
-            } catch {
-                // do nothing...
-            }
+            await FFMpeg.uploadFile(t.url, filePath);
         }));
 
         return times;
 
     }
 
+
+    private static async uploadFile(url: string, filePath: string) {
+        var b = new BlockBlobClient(url);
+        await b.uploadFile(filePath, {
+            blobHTTPHeaders: {
+                blobContentType: "image/jpg",
+                blobCacheControl: "public, max-age=3240000"
+            }
+        });
+        try {
+            await promises.unlink(filePath);
+        } catch {
+            // do nothing...
+        }
+    }
 }

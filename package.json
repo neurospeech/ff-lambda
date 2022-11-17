@@ -28,6 +28,15 @@
     "@types/fluent-ffmpeg": "^2.1.20",
     "@types/node": "^11.15.54",
     "@types/sharp": "^0.29.5",
-    "fs": "0.0.1-security"
+    "fs": "0.0.1-security",
+    "eslint": "^7.32.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-config-standard": "^16.0.3",
+    "eslint-plugin-import": "^2.25.4",
+    "eslint-plugin-jsdoc": "^37.7.0",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prefer-arrow": "^1.2.3",
+    "eslint-plugin-promise": "^5.2.0",
+    "eslint-plugin-react": "^7.28.0"
   }
 }

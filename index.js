@@ -31,6 +31,10 @@ exports.handler = async (event) => {
             const { input, output } = JSON.parse(body);
             return asJson(await FFMpeg.thumbnails(input, output.thumbnails));
         }
+        if(rawPath.startsWith("/convert")) {
+            const { input, output } = JSON.parse(body);
+            return asJson(await FFMpeg.convert(input, output));
+        }
 
         return asJson(event);
     } catch (error) {
