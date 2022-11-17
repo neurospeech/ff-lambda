@@ -4,6 +4,7 @@ import { BlockBlobClient } from "@azure/storage-blob";
 import { existsSync, promises } from "fs";
 import TempFileService from "./TempFileService";
 export { default as A1}  from "./FFConfig";
+import * as mime from "mime-types";
 
 export interface IFFMpegThumbnail {
     time: number;
@@ -110,10 +111,13 @@ export default class FFMpeg {
 
 
     private static async uploadFile(url: string, filePath: string) {
+
+        const blobContentType = mime.lookup(filePath);
+
         var b = new BlockBlobClient(url);
         await b.uploadFile(filePath, {
             blobHTTPHeaders: {
-                blobContentType: "image/jpg",
+                blobContentType,
                 blobCacheControl: "public, max-age=3240000"
             }
         });
