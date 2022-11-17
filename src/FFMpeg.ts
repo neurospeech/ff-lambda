@@ -41,6 +41,9 @@ export default class FFMpeg {
         const outputFile = await TempFileService.getTempFile(fileInfo.ext);
 
         const convert = async () => {
+
+            console.log("Starting File Conversion");
+
             await new Promise<void>((resolve, reject) => {
                 let command = ffmpeg(file, { timeout: 60 })
                     .inputOptions("-" + parameters)
@@ -49,6 +52,7 @@ export default class FFMpeg {
                         resolve();
                     })
                     .on("error", (error) => {
+                        console.error(error);
                         reject(error);
                     });
 
@@ -76,6 +80,8 @@ export default class FFMpeg {
 
         const start = Date.now();
 
+        console.log("Starting thumbnails");
+
         file ??= await TempFileService.downloadTo(input);
         const folder = path.dirname(file);
         const fileNames = await new Promise<string[]>((resolve, reject) => {
@@ -88,6 +94,7 @@ export default class FFMpeg {
                     resolve(files);
                 })
                 .on("error", (error) => {
+                    console.error(error);
                     reject(error);
                 })
                 .screenshots({
@@ -111,6 +118,7 @@ export default class FFMpeg {
             if (!existsSync(filePath)) {
                 return;
             }
+
             await FFMpeg.uploadFile(t.url, filePath);
         }));
 
@@ -120,6 +128,8 @@ export default class FFMpeg {
 
 
     private static async uploadFile(url: string, filePath: string) {
+
+        console.log(`Uploading ${url}`);
 
         const blobContentType = mime.lookup(filePath);
 
