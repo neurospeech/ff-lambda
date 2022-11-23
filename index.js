@@ -28,7 +28,10 @@ exports.handler = async (event) => {
         } = event;
 
         if (rawPath) {
-
+            if(rawPath.startsWith("/fast-convert")) {
+                const { input, output } = JSON.parse(body);
+                return asJson(await FFMpeg.fastConvert(input, output));
+            }
             if (rawPath.startsWith("/probe")) {
                 return asJson(await FFProbe.probe(url));
             }

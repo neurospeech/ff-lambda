@@ -82,6 +82,62 @@ export default class FFMpeg {
         return result;
     }
 
+    public static async fastConvert(
+        input: string,
+        {
+            url,
+            thumbnails,
+        }: IFFMpegOutput) {
+
+        var file = await TempFileService.downloadTo(input);
+
+        const fileInfo = path.parse(url.split("?")[0]);
+        const outputFile = await TempFileService.getTempFile(fileInfo.ext);
+
+        const convert = async () => {
+
+            const { isMobileReady, needsFastStart } = await FFProbe.probe(input, file);
+            if (isMobileReady) {
+                copyFileSync(file, outputFile.path);
+            } else if (needsFastStart) {
+                console.log("Improving FastStart");
+                const output = await FFConfig.run(`-i ${file} -c copy -movflags +faststart -y ${outputFile.path}`.split(" "));
+                console.log(output);
+            } else {
+
+                // console.log("Starting File Conversion");
+
+                // const output = await FFConfig.run(`-i ${file} ${parameters} -y ${outputFile.path}`.split(" "));
+
+                // console.log(output);
+                return { isMobileReady: false };
+            }
+
+            await FFMpeg.uploadFile(url, outputFile.path);
+        }
+
+        await Promise.all([this.thumbnails(input, thumbnails, file), convert()]);
+
+        const result = {
+            isMobileReady: true,
+            url,
+            thumbnails
+        };
+
+        // if(notify) {
+        //     console.log(`Notifying ${notify}`);
+        //     await fetch(notify, {
+        //         method: "POST",
+        //         headers: {
+        //             "content-type": "application/json"
+        //         },
+        //         body: "{}"
+        //     });
+        // }
+
+        return result;
+    }
+
     public static async thumbnails(input: string, times: IFFMpegThumbnail[], file: string = void 0) {
 
         const start = Date.now();

@@ -64,6 +64,8 @@ export default class FFProbe {
 
         const isMobileReady = isAAC && isH264 && fastStart && isBelow30FPS;
 
+        const needsFastStart = isAAC && isH264 && isBelow30FPS && !fastStart;
+
         return {
             ... metadata,
             isAAC,
@@ -72,7 +74,8 @@ export default class FFProbe {
             isBelow30FPS,
             isMobileReady,
             indexOfMoov,
-            indexOfMDat
+            indexOfMDat,
+            needsFastStart
         };
     }
 
