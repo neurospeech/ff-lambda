@@ -1,7 +1,7 @@
 const FFProbe = require("./dist/FFProbe").default;
 const FFMpeg = require("./dist/FFMpeg").default;
 
-const { GetObjectCommand, S3Client, DeleteObjectCommand } = require("@aws-sdk/client-s3");
+// const { GetObjectCommand, S3Client, DeleteObjectCommand } = require("@aws-sdk/client-s3");
 
 function asJson(body, statusCode = 200) {
     return {
@@ -45,22 +45,22 @@ exports.handler = async (event) => {
             }
         }
 
-        if(Records) {
-            const Bucket = Records[0].s3.bucket.name;
-            const Key = decodeURIComponent(event.Records[0].s3.object.key.replace(/\+/g, ' '));
+        // if(Records) {
+        //     const Bucket = Records[0].s3.bucket.name;
+        //     const Key = decodeURIComponent(event.Records[0].s3.object.key.replace(/\+/g, ' '));
 
-            const client = new S3Client();
+        //     const client = new S3Client();
 
-            const cmd = new GetObjectCommand({ Bucket, Key });
-            const res = await client.send(cmd);
-            const { input, output } = JSON.parse(await res.Body.text());
+        //     const cmd = new GetObjectCommand({ Bucket, Key });
+        //     const res = await client.send(cmd);
+        //     const { input, output } = JSON.parse(await res.Body.text());
 
-            const r = await FFMpeg.convert(input, output);
+        //     const r = await FFMpeg.convert(input, output);
 
-            await client.send(new DeleteObjectCommand({ Bucket, Key }));
+        //     await client.send(new DeleteObjectCommand({ Bucket, Key }));
 
-            return asJson(r);
-        }
+        //     return asJson(r);
+        // }
 
         return asJson(event);
     } catch (error) {
