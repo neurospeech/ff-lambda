@@ -89,34 +89,35 @@ export default class FFMpeg {
             thumbnails,
         }: IFFMpegOutput) {
 
+        console.log(`Running fast convert for ${input}`);
+
         var file = await TempFileService.downloadTo(input);
 
         const fileInfo = path.parse(url.split("?")[0]);
         const outputFile = await TempFileService.getTempFile(fileInfo.ext);
 
-        const convert = async () => {
 
-            const { isMobileReady, needsFastStart } = await FFProbe.probe(input, file);
-            if (isMobileReady) {
-                copyFileSync(file, outputFile.path);
-            } else if (needsFastStart) {
-                console.log("Improving FastStart");
-                const output = await FFConfig.run(`-i ${file} -c copy -movflags +faststart -y ${outputFile.path}`.split(" "));
-                console.log(output);
-            } else {
+        const { isMobileReady, needsFastStart } = await FFProbe.probe(input, file);
+        if (isMobileReady) {
+            console.log("Copying file to output");
+            copyFileSync(file, outputFile.path);
+        } else if (needsFastStart) {
+            console.log("Improving FastStart");
+            const output = await FFConfig.run(`-i ${file} -c copy -movflags +faststart -y ${outputFile.path}`.split(" "));
+            console.log(output);
+        } else {
 
-                // console.log("Starting File Conversion");
+            // console.log("Starting File Conversion");
 
-                // const output = await FFConfig.run(`-i ${file} ${parameters} -y ${outputFile.path}`.split(" "));
+            // const output = await FFConfig.run(`-i ${file} ${parameters} -y ${outputFile.path}`.split(" "));
 
-                // console.log(output);
-                return { isMobileReady: false };
-            }
-
-            await FFMpeg.uploadFile(url, outputFile.path, true);
+            // console.log(output);
+            return { isMobileReady: false };
         }
 
-        await Promise.all([this.thumbnails(input, thumbnails, file), convert()]);
+        const convert = FFMpeg.uploadFile(url, outputFile.path, true);
+
+        await Promise.all([this.thumbnails(input, thumbnails, file), convert]);
 
         const result = {
             isMobileReady: true,
