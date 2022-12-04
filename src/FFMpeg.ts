@@ -113,7 +113,7 @@ export default class FFMpeg {
                 return { isMobileReady: false };
             }
 
-            await FFMpeg.uploadFile(url, outputFile.path);
+            await FFMpeg.uploadFile(url, outputFile.path, true);
         }
 
         await Promise.all([this.thumbnails(input, thumbnails, file), convert()]);
@@ -200,9 +200,13 @@ export default class FFMpeg {
     }
 
 
-    private static async uploadFile(url: string, filePath: string) {
+    private static async uploadFile(url: string, filePath: string, throwIfNotFound = false) {
 
         if (!existsSync(filePath)) {
+            if (throwIfNotFound) {
+                throw new Error(`Failed to upload ${url}, file not found at ${filePath}`)
+            }
+            console.error(`File does not exist at ${filePath} for ${url}`);
             return;
         }
     
