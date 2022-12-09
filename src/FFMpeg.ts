@@ -97,7 +97,7 @@ export default class FFMpeg {
         const outputFile = await TempFileService.getTempFile(fileInfo.ext);
 
 
-        const { isMobileReady, needsFastStart } = await FFProbe.probe(input, file);
+        const { isMobileReady, needsFastStart, hasAudio, hasVideo } = await FFProbe.probe(input, file);
         if (isMobileReady) {
             console.log("Copying file to output");
             copyFileSync(file, outputFile.path);
@@ -112,7 +112,7 @@ export default class FFMpeg {
             // const output = await FFConfig.run(`-i ${file} ${parameters} -y ${outputFile.path}`.split(" "));
 
             // console.log(output);
-            return { isMobileReady: false };
+            return { isMobileReady: false, hasAudio, hasVideo };
         }
 
         const convert = FFMpeg.uploadFile(url, outputFile.path, true);
