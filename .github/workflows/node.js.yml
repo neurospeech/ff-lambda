@@ -25,7 +25,7 @@ jobs:
     - name: action-zip
       uses: montudor/action-zip@v1.0.0
       with:
-        args: zip -qq -r package.zip package.json index.js dist node_modules src lib
+        args: zip -qq -r package.zip package.json index.js dist node_modules src lib images
     - uses: hkusu/s3-upload-action@v2
       with:
          aws-access-key-id: "${{ secrets.AWS_ACCESS_KEY_ID }}"
