@@ -10,7 +10,7 @@ import FFConfig from "./FFConfig";
 import FFProbe from "./FFProbe";
 
 declare var __dirname;
-let img = path.join(__dirname, "..", "images", "logo.png");
+let img = path.join(__dirname, "..", "images", "logo.jpg");
 
 export interface IFFMpegThumbnail {
     time: number;
