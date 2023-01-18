@@ -116,6 +116,7 @@ export default class FFMpeg {
             }
 
             console.log("Converting to mp4 audio only....");
+            console.log(`dir: ${__dirname}, img: ${img}`);
             const output = await FFConfig.run(`-loop 1 -i ${img} -i ${file} -c:a aac -ab 112k -c:v libx264 -shortest -strict -2 ${outputFile.path}`.split(" "));
             console.log(output);
         }
