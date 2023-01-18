@@ -111,6 +111,7 @@ export default class FFMpeg {
         } else {
 
             if (hasVideo) {
+                console.log("Video is not mobile ready...");
                 return { isMobileReady: false, hasAudio, hasVideo };
             }
 
