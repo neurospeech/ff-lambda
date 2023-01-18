@@ -9,6 +9,9 @@ import fetch from "node-fetch";
 import FFConfig from "./FFConfig";
 import FFProbe from "./FFProbe";
 
+declare var require;
+let img = require.resolve("../images/logo.png");
+
 export interface IFFMpegThumbnail {
     time: number;
     url: string;
@@ -107,12 +110,13 @@ export default class FFMpeg {
             console.log(output);
         } else {
 
-            // console.log("Starting File Conversion");
+            if (hasVideo) {
+                return { isMobileReady: false, hasAudio, hasVideo };
+            }
 
-            // const output = await FFConfig.run(`-i ${file} ${parameters} -y ${outputFile.path}`.split(" "));
-
-            // console.log(output);
-            return { isMobileReady: false, hasAudio, hasVideo };
+            console.log("Converting to mp4 audio only....");
+            const output = await FFConfig.run(`-loop 1 -i ${img} -i ${file} -c:a aac -ab 112k -c:v libx264 -shortest -strict -2 ${outputFile.path}`.split(" "));
+            console.log(output);
         }
 
         const convert = FFMpeg.uploadFile(url, outputFile.path, true);
