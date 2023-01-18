@@ -9,8 +9,8 @@ import fetch from "node-fetch";
 import FFConfig from "./FFConfig";
 import FFProbe from "./FFProbe";
 
-declare var require;
-let img = require.resolve("../images/logo.png");
+declare var __dirname;
+let img = path.join(__dirname, "..", "images", "logo.png");
 
 export interface IFFMpegThumbnail {
     time: number;
