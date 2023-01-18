@@ -119,13 +119,17 @@ export default class FFMpeg {
             if (!existsSync(img)) {
                 console.log(`${img} does not exist !! something is wrong...`)
             }
-            const output = await FFConfig.run(`-loop 1 -i ${img} -i ${file} -c:a aac -ab 112k -c:v libx264 -shortest -strict -2 ${outputFile.path}`.split(" "));
+            const output = await FFConfig.run(`-i ${file} -c:a aac -ab 112k ${outputFile.path}`.split(" "));
             console.log(output);
         }
 
         const convert = FFMpeg.uploadFile(url, outputFile.path, true);
 
-        await Promise.all([this.thumbnails(input, thumbnails, file), convert]);
+        if (hasVideo) {
+            await Promise.all([this.thumbnails(input, thumbnails, file), convert]);
+        } else {
+            await Promise.all([convert, ... thumbnails.map((x) => FFMpeg.uploadFile(x.url, img))])
+        }
 
         const result = {
             isMobileReady: true,
