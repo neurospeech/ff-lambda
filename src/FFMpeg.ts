@@ -121,8 +121,9 @@ export default class FFMpeg {
             }
 
             if(file.endsWith(".m4a")) {
-                const output = await FFConfig.run(`-i ${file} -c copy -movflags +faststart ${outputFile.path}`.split(" "));
-                console.log(output);
+                // const output = await FFConfig.run(`-i ${file} -c copy -movflags +faststart ${outputFile.path}`.split(" "));
+                // console.log(output);
+                copyFileSync(file, outputFile.path);
             } else {
 
                 // const output = await FFConfig.run(`-loop 1 -i ${img} -i ${file} -c:a aac -b:a 192k -c:v libx264 -pix_fmt yuv420p -tune stillimage -movflags +faststart -shortest ${outputFile.path}`.split(" "));
