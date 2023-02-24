@@ -47,7 +47,7 @@ export default class FFProbe {
             const fastStart = indexOfMoov < indexOfMDat;
 
             const hasAudio = metadata.streams.some((x) => x.codec_type === "audio");
-            const hasVideo = metadata.streams.some((x) => x.codec_type === "video");
+            const hasVideo = metadata.streams.some((x) => x.codec_type === "video" && x.codec_name !== "mjpeg");
 
             const isAAC = hasAudio 
                 ? metadata.streams.some((x) => x.codec_name === "aac" )
